@@ -1,0 +1,13 @@
+# /.htaccess
+# Opsi keamanan dasar
+
+# Mencegah listing isi folder
+Options -Indexes
+
+# (Opsional) Jika Anda ingin URL bersih nanti, ini adalah dasarnya
+# <IfModule mod_rewrite.c>
+#     RewriteEngine On
+#     RewriteCond %{REQUEST_FILENAME} !-f
+#     RewriteCond %{REQUEST_FILENAME} !-d
+#     RewriteRule ^ index.php [L]
+# </IfModule>
