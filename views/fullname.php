@@ -1,13 +1,12 @@
 <?php
+// FILE: views/fullname.php
 /*
- * /views/fullname.php
- * Halaman input Nama Lengkap (Langkah 2).
- * Variabel $pdo dan $page_title tersedia dari index.php
+ * REVISI: Total steps menjadi 9
  */
 
 // Perkiraan total langkah
-$total_steps = 7; 
-$current_step_number = 2;
+$total_steps = 9; 
+$current_step_number = 3;
 
 // Ambil nama sementara jika user kembali (klik 'back')
 $temp_full_name = $_SESSION['temp_full_name'] ?? '';
@@ -45,7 +44,10 @@ $temp_full_name = $_SESSION['temp_full_name'] ?? '';
 
                     <hr class="my-4">
 
-                    <div class="d-flex justify-content-end">
+                    <div class="d-flex justify-content-between">
+                        <button type="submit" name="action" value="go_back" class="btn btn-outline-secondary btn-lg" formnovalidate>
+                            Kembali
+                        </button>
                         <button type="submit" name="action" value="submit_fullname" id="next-btn" class="btn btn-primary btn-lg" disabled>
                             Berikutnya
                         </button>
@@ -81,6 +83,12 @@ $temp_full_name = $_SESSION['temp_full_name'] ?? '';
 
         // Pastikan validasi berjalan sebelum submit (opsional, tapi bagus)
         $('#fullname-form').on('submit', function(e) {
+            // Jangan cegah submit jika tombol 'go_back' yang diklik
+            var $clickedButton = $(document.activeElement);
+            if ($clickedButton.attr('name') === 'action' && $clickedButton.val() === 'go_back') {
+                return;
+            }
+
             if ($input.val().trim().length === 0) {
                 e.preventDefault(); // Hentikan submit jika (entah bagaimana) kosong
                 $nextBtn.prop('disabled', true);

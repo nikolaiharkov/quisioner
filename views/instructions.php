@@ -1,13 +1,12 @@
 <?php
+// FILE: views/instructions.php
 /*
- * /views/instructions.php
- * Halaman Petunjuk Pengisian (Langkah 5).
- * Variabel $pdo, $page_title, $respondent_id, $role tersedia dari index.php
+ * REVISI: Total steps menjadi 9
  */
 
 // Perkiraan total langkah
-$total_steps = 7; 
-$current_step_number = 5;
+$total_steps = 9; 
+$current_step_number = 6;
 ?>
 
 <div class="row justify-content-center">
@@ -61,7 +60,10 @@ $current_step_number = 5;
                 <form action="index.php" method="POST">
                     <?php csrf_input(); // Helper untuk CSRF token ?>
                     
-                    <div class="d-flex justify-content-end">
+                    <div class="d-flex justify-content-between">
+                        <button type="submit" name="action" value="go_back" class="btn btn-outline-secondary btn-lg">
+                            Kembali
+                        </button>
                         <button type="submit" name="action" value="start_questions" class="btn btn-primary btn-lg">
                             Mulai Mengisi
                         </button>

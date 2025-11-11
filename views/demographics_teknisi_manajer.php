@@ -1,4 +1,5 @@
 <?php
+// FILE: views/demographics_teknisi_manajer.php
 /*
  * /views/demographics_teknisi_manajer.php
  * (PARTIAL VIEW)
@@ -6,10 +7,22 @@
  * Kolom (name="..."): gender, age_group, pendidikan, jabatan, 
  * lama_bekerja, unit, pengalaman_ai
  *
+ * REVISI 2: Membuat dropdown 'jabatan' dinamis
+ * - 'teknisi' (Pelaksana) -> disabled, 'Staf/Pelaksana'
+ * - 'manajer' (Manager) -> enabled, daftar kustom 5-poin
+ *
+ * REVISI 3 (PERBAIKAN BUG):
+ * Menambahkan <input type="hidden" name="jabatan"> untuk 'teknisi'
+ * karena field 'disabled' tidak dikirim oleh browser.
+ *
  * Variabel $saved_data tersedia dari views/demographics.php
  */
 
 $saved_data = $_SESSION['temp_demographics'] ?? [];
+
+// Ambil peran (role) dari session untuk menentukan logika form
+$role = $_SESSION['role'] ?? 'teknisi'; // Default ke teknisi jika tidak ada
+$is_manajer = ($role === 'manajer');
 ?>
 
 <div class="demografis-form" id="demografis-internal">
@@ -58,15 +71,34 @@ $saved_data = $_SESSION['temp_demographics'] ?? [];
 
         <div class="col-md-12 mb-3">
             <label for="jabatan" class="form-label">Jabatan / Level Saat Ini <span class="text-danger">*</span></label>
-            <select class="form-select" id="jabatan" name="jabatan" required>
-                <option value="" disabled <?php echo empty($saved_data['jabatan']) ? 'selected' : ''; ?>>-- Pilih --</option>
-                <option value="Staf/Pelaksana" <?php echo (($saved_data['jabatan'] ?? '') === 'Staf/Pelaksana') ? 'selected' : ''; ?>>Staf / Pelaksana</option>
-                <option value="Kasi/Supervisor" <?php echo (($saved_data['jabatan'] ?? '') === 'Kasi/Supervisor') ? 'selected' : ''; ?>>Kepala Seksi / Supervisor</option>
-                <option value="Kasubdit/Manajer" <?php echo (($saved_data['jabatan'] ?? '') === 'Kasubdit/Manajer') ? 'selected' : ''; ?>>Kepala Subdit / Manajer</option>
-                <option value="Kabid/Senior Manager" <?php echo (($saved_data['jabatan'] ?? '') === 'Kabid/Senior Manager') ? 'selected' : ''; ?>>Kepala Bidang / Senior Manager</option>
-                <option value="Direktur/Setara" <?php echo (($saved_data['jabatan'] ?? '') === 'Direktur/Setara') ? 'selected' : ''; ?>>Direktur atau Setara</option>
+            <select class="form-select" id="jabatan" name="jabatan" required <?php if (!$is_manajer) echo 'disabled'; ?>>
+                
+                <?php if ($is_manajer): // Jika rolenya 'manajer' (DJBC Manager) ?>
+                    
+                    <option value="" disabled <?php echo empty($saved_data['jabatan']) ? 'selected' : ''; ?>>-- Pilih --</option>
+                    <option value="Kepala Seksi" <?php echo (($saved_data['jabatan'] ?? '') === 'Kepala Seksi') ? 'selected' : ''; ?>>Kepala Seksi</option>
+                    <option value="Kepala Subdit" <?php echo (($saved_data['jabatan'] ?? '') === 'Kepala Subdit') ? 'selected' : ''; ?>>Kepala Subdit</option>
+                    <option value="Kepala Bidang" <?php echo (($saved_data['jabatan'] ?? '') === 'Kepala Bidang') ? 'selected' : ''; ?>>Kepala Bidang</option>
+                    <option value="Kepala Kantor" <?php echo (($saved_data['jabatan'] ?? '') === 'Kepala Kantor') ? 'selected' : ''; ?>>Kepala Kantor</option>
+                    <option value="Direktur atau Setara" <?php echo (($saved_data['jabatan'] ?? '') === 'Direktur atau Setara') ? 'selected' : ''; ?>>Direktur atau Setara</option>
+
+                <?php else: // Jika rolenya 'teknisi' (DJBC Pelaksana) ?>
+
+                    <option value="Staf/Pelaksana" selected>Staf / Pelaksana</option>
+
+                <?php endif; ?>
+
             </select>
-        </div>
+            
+            <?php
+            // --- INILAH PERBAIKANNYA ---
+            // Jika BUKAN manajer (artinya 'teknisi'), tambahkan input tersembunyi
+            // untuk memastikan nilai 'Staf/Pelaksana' dikirim ke server.
+            if (!$is_manajer): 
+            ?>
+                <input type="hidden" name="jabatan" value="Staf/Pelaksana">
+            <?php endif; ?>
+            </div>
 
         <div class="col-md-6 mb-3">
             <label for="lama_bekerja" class="form-label">Lama Bekerja di Sektor Publik <span class="text-danger">*</span></label>

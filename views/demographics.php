@@ -1,11 +1,7 @@
 <?php
+// FILE: views/demographics.php
 /*
- * /views/demographics.php
- * Halaman Demografi (Langkah 4).
- * REVISI: File ini sekarang "bodoh" (dumb view).
- * Logika POST telah dihapus karena ditangani oleh /index.php.
- *
- * Variabel $pdo, $page_title, $role, $session_id tersedia dari index.php
+ * REVISI: Total steps menjadi 9
  */
 
 // Tentukan partial view yang akan dimuat
@@ -14,13 +10,11 @@ $partial_view = $is_eksternal
     ? __DIR__ . '/demographics_eksternal.php'
     : __DIR__ . '/demographics_teknisi_manajer.php';
 
-// Data untuk ditampilkan di form (jika user kembali)
-// Kita gunakan session sementara untuk menyimpan ini jika validasi gagal
 $saved_data = $_SESSION['temp_demographics'] ?? [];
 
 // Pengaturan Progress Bar
-$total_steps = 7; 
-$current_step_number = 4;
+$total_steps = 9; 
+$current_step_number = 5;
 ?>
 
 <div class="row justify-content-center">
@@ -52,7 +46,10 @@ $current_step_number = 4;
                     
                     <hr class="my-4">
 
-                    <div class="d-flex justify-content-end">
+                    <div class="d-flex justify-content-between">
+                        <button type="submit" name="action" value="go_back" class="btn btn-outline-secondary btn-lg" formnovalidate>
+                            Kembali
+                        </button>
                         <button type="submit" name="action" value="submit_demographics" id="next-btn" class="btn btn-primary btn-lg" disabled>
                             Berikutnya
                         </button>
@@ -87,9 +84,11 @@ $current_step_number = 4;
                         allValid = false;
                     }
                 } else {
-                    // Cek input text/select
-                    if (!$input.val() || $input.val().trim() === '') {
-                        allValid = false;
+                    // Cek input text/select (HANYA jika tidak disabled)
+                    if (!$input.prop('disabled')) {
+                        if (!$input.val() || $input.val().trim() === '') {
+                            allValid = false;
+                        }
                     }
                 }
             });

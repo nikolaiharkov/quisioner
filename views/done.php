@@ -1,33 +1,27 @@
 <?php
+// FILE: views/done.php
 /*
  * /views/done.php
- * Halaman Selesai / Terima Kasih (Langkah 7 - Terakhir).
- * Variabel $pdo, $page_title, $respondent_id, $role, $session_id tersedia dari index.php
+ * Halaman Selesai / Terima Kasih (Langkah Terakhir).
+ * REVISI: Total steps menjadi 9
+ * REVISI 2: Unset 'current_section_part'
  */
 
 // Perkiraan total langkah
-$total_steps = 7; 
-$current_step_number = 7;
+$total_steps = 9; 
+$current_step_number = 9;
 
-// Ambil ID Sesi untuk referensi
 $session_id_display = $_SESSION['session_id'] ?? null;
-$full_name_display = $_SESSION['full_name'] ?? 'Responden'; // Ambil nama jika disimpan, jika tidak, default
-
-// Bersihkan session wizard untuk memulai yang baru nanti.
-// Kita bisa lakukan ini di sini, atau saat user klik link 'kembali'
-// Untuk sekarang, kita biarkan session-nya, dan bersihkan jika user kembali ke index.php
-// (Logic untuk membersihkan session bisa ditambahkan di index.php jika $current_step == 'welcome')
+$full_name_display = $_SESSION['full_name'] ?? 'Responden';
 
 // --- Logika Pembersihan Session ---
-// Setelah halaman 'done' ditampilkan, data wizard tidak lagi diperlukan
-// Menghapus ini memastikan jika user me-refresh atau kembali ke index.php,
-// mereka akan memulai dari awal.
 unset(
     $_SESSION['wizard_step'], 
     $_SESSION['respondent_id'], 
     $_SESSION['session_id'], 
     $_SESSION['role'], 
     $_SESSION['current_section_id'],
+    $_SESSION['current_section_part'], // <-- Tambahan baru
     $_SESSION['temp_full_name']
 );
 // ---------------------------------
