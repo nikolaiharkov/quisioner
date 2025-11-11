@@ -1,7 +1,6 @@
-````markdown
 # Proyek Kuesioner Public Service Value (PSV)
 
-Aplikasi web ini adalah sistem kuesioner **multi-langkah (wizard)** yang dibuat menggunakan **PHP natif**, **MySQL**, dan **Bootstrap 5**. Aplikasi dirancang untuk mengumpulkan data dari tiga jenis responden (Teknisi, Manajer, dan Eksternal) dan dilengkapi panel admin untuk mengelola pertanyaan serta mengekspor hasil.
+Aplikasi web ini adalah sistem kuesioner **multi-langkah (wizard)** yang dibuat menggunakan **PHP natif**, **MySQL**, dan **Bootstrap 5**. Aplikasi dirancang untuk mengumpulkan data dari tiga jenis responden (DJBC Pelaksana, DJBC Manager, dan Eksternal) dan dilengkapi panel admin untuk mengelola pertanyaan serta mengekspor hasil.
 
 ---
 
@@ -22,52 +21,66 @@ Aplikasi web ini adalah sistem kuesioner **multi-langkah (wizard)** yang dibuat 
 ### 1. Alur Kuesioner (Wizard)
 Aplikasi memandu pengguna melalui serangkaian langkah yang terdefinisi dengan baik. Logika utama dikendalikan oleh `index.php` yang berfungsi sebagai **controller/router** utama, menggunakan `$_SESSION['wizard_step']` untuk melacak progres pengguna.
 
-**Alur standar untuk responden:**
+Wizard kini juga mendukung **navigasi 'Kembali'** di setiap langkah untuk memperbaiki input sebelumnya.
 
-1. **Selamat Datang** (`views/welcome.php`): Halaman pengantar.
-2. **Nama Lengkap** (`views/fullname.php`): Mengumpulkan identitas responden.
-3. **Pemilihan Peran** (`views/role.php`): Langkah krusial untuk menentukan alur. Responden memilih antara:
-   - **Teknisi (Internal)**
-   - **Manajer (Internal)**
-   - **Eksternal (Pemangku Kepentingan)**
-4. **Demografi** (`views/demographics.php`): Memuat formulir demografis **berdasarkan peran** yang dipilih pada langkah 3 (`demographics_teknisi_manajer.php` atau `demographics_eksternal.php`).
-5. **Instruksi** (`views/instructions.php`): Penjelasan skala **Likert 1–7**.
-6. **Pengisian Kuesioner** (`views/section.php`): Halaman dinamis yang memuat pertanyaan dari database (`questions`) berdasarkan:
-   - **Section (Bagian):** Kuesioner dibagi ke beberapa bagian (misal: `S1`, `S2`, `S3`, `S5`).
-   - **Peran (Role):** Pertanyaan ditampilkan selektif sesuai `target_role` di database (misal: *teknisi* hanya melihat pertanyaan `T1–T5`, *manajer* hanya `M1–M5`, dan *eksternal* hanya `S5`).
-7. **Selesai** (`views/done.php`): Halaman terima kasih dan sesi pengguna dibersihkan.
+**Alur standar untuk responden (Internal: 9 Langkah / Eksternal: 7 Langkah):**
+
+1.  **Selamat Datang** (`views/welcome.php`): Halaman pengantar, perkenalan peneliti, dan tujuan penelitian. (Menampilkan Logo).
+2.  **Info Responden** (`views/welcome_part2.php`): Penjelasan detail mengenai sasaran responden (Pelaksana, Manajer, Eksternal).
+3.  **Nama Lengkap** (`views/fullname.php`): Mengumpulkan identitas responden.
+4.  **Pemilihan Peran** (`views/role.php`): Langkah krusial untuk menentukan alur. Responden memilih antara:
+    * **DJBC Pelaksana** (Internal)
+    * **DJBC Manager** (Internal)
+    * **Eksternal** (Pemangku Kepentingan)
+5.  **Demografi** (`views/demographics.php`): Memuat formulir demografis **berdasarkan peran** (`demographics_teknisi_manajer.php` atau `demographics_eksternal.php`).
+    * *Fitur Dinamis:* Pilihan "Jabatan" untuk **DJBC Pelaksana** otomatis dikunci sebagai "Staf/Pelaksana". **DJBC Manager** mendapatkan daftar 5 pilihan jabatan level manajerial.
+6.  **Instruksi** (`views/instructions.php`): Penjelasan skala **Likert 1–7**.
+7.  **Pengisian Kuesioner** (`views/section.php`): Halaman dinamis yang memuat pertanyaan dari database (`questions`) berdasarkan:
+    * **Section (Bagian):** Kuesioner dibagi ke beberapa bagian.
+    * **Peran (Role):** Pertanyaan ditampilkan selektif.
+    * **Fitur Dinamis (Judul S1):** Responden **Pelaksana** melihat judul "Technical AI Competency (TAC)", sementara **Manager** melihat "Managerial AI Competency (MAC)".
+    * **Fitur Dinamis (Alur S3):** Untuk responden internal, Bagian 3 (OSI) **dipisah menjadi dua langkah terpisah**:
+        * Langkah 1: **Exploitative Service Innovation (EXPL)**
+        * Langkah 2: **Exploratory Service Innovation (EXPR)**
+8.  **Selesai** (`views/done.php`): Halaman terima kasih dan sesi pengguna dibersihkan.
 
 ---
 
 ### 2. Panel Admin (`/admin/`)
-Area admin terproteksi untuk mengelola kuesioner dan data.
+Area admin terproteksi untuk mengelola kuesioner dan data. (Tidak ada perubahan fungsional)
 
-- **Login Admin** (`admin/login.php`): Halaman login aman yang memverifikasi akun admin di tabel `admins`.
-- **Dashboard** (`admin/index.php`):
-  - Statistik ringkasan (total responden, jumlah per peran).
-  - Daftar semua responden dengan status (**Completed** / **In Progress**).
-  - Fitur filter dan pencarian responden.
-- **Manajemen Pertanyaan** (`admin/questions.php`):
-  - Fitur **CRUD penuh** (Create, Read, Update, Delete) untuk semua pertanyaan.
-  - Admin dapat menambah, mengedit, menonaktifkan pertanyaan, serta mengatur **section** dan **target role**.
-- **Ekspor Data** (via `admin/index.php`):
-  - Ekspor data jawaban **CSV**.
-  - Ekspor dapat difilter berdasarkan **Peran (Role)** dan **Section (Bagian)** untuk memudahkan analisis.
-- **Seeder Admin** (`admin/seed_admin.php`): Skrip **sekali pakai** untuk membuat akun admin pertama. **Hapus file ini setelah instalasi**.
+- **Login Admin** (`admin/login.php`)
+- **Dashboard** (`admin/index.php`)
+- **Manajemen Pertanyaan** (`admin/questions.php`)
+- **Ekspor Data** (via `admin/index.php`)
+- **Seeder Admin** (`admin/seed_admin.php`)
 
 ---
 
 ### 3. Struktur Database (`migration.sql`)
-Skema database dirancang untuk mendukung seluruh fungsionalitas aplikasi:
+Skema database dirancang untuk mendukung seluruh fungsionalitas aplikasi.
 
 - **admins**: Menyimpan data login admin.
 - **sections**: Mendefinisikan bagian-bagian kuesioner (`S1`, `S2`, dll.).
 - **questions**: Menyimpan teks pertanyaan, `code`, `section_id`, dan `target_role`.
 - **respondents**: Menyimpan data demografis tiap responden.
 - **response_sessions**: Melacak setiap sesi pengisian kuesioner.
-- **answers**: Menyimpan setiap jawaban (skala 1–7) yang tertaut ke `session_id` dan `question_id`.
+- **answers**: Menyimpan setiap jawaban (skala 1–7).
 
-> Import `migration.sql` akan membuat semua tabel dan mengisi seed untuk `sections` dan `questions`.
+> **PENTING (Perubahan Pasca-Migrasi):**
+> File `migration.sql` di repositori ini **BELUM DIPERBARUI** untuk mencerminkan perubahan pada form demografi. Setelah menjalankan `migration.sql`, Anda **WAJIB** menjalankan kueri `ALTER TABLE` berikut agar form demografi Manajer berfungsi dan tidak error:
+> ```sql
+> ALTER TABLE respondents MODIFY COLUMN jabatan 
+> ENUM(
+>     'Staf/Pelaksana', 
+>     'Kepala Seksi', 
+>     'Kepala Subdit', 
+>     'Kepala Bidang', 
+>     'Kepala Kantor', 
+>     'Direktur atau Setara'
+> );
+> ```
+> *Kueri ini memperbarui definisi `ENUM` pada kolom `jabatan` agar sesuai dengan 5 opsi baru untuk DJBC Manager.*
 
 ---
 
@@ -95,10 +108,21 @@ Aplikasi menerapkan praktik keamanan dasar yang baik:
 ### 1) Database
 1. Buat database baru di MySQL (misal: `psv`).
 2. Import file `migration.sql` ke database tersebut.
+3. **(WAJIB)** Jalankan kueri SQL berikut pada database Anda untuk memperbarui kolom `jabatan` agar sesuai dengan logika aplikasi terbaru:
+   ```sql
+   ALTER TABLE respondents MODIFY COLUMN jabatan 
+   ENUM(
+       'Staf/Pelaksana', 'Kepala Seksi', 'Kepala Subdit', 
+       'Kepala Bidang', 'Kepala Kantor', 'Direktur atau Setara'
+   );
+````
 
-### 2) Konfigurasi
-1. Salin seluruh file proyek ke server web Anda (misal: ke folder `quisioner-full`).
-2. Buka `config.php`, lalu sesuaikan kredensial database dan URL dasar:
+### 2\) Konfigurasi
+
+1.  Salin seluruh file proyek ke server web Anda (misal: ke folder `quisioner-full`).
+2.  Buka `config.php`, lalu sesuaikan kredensial database dan URL dasar:
+
+<!-- end list -->
 
 ```php
 // config.php (contoh)
@@ -109,27 +133,28 @@ define('DB_PASS', '');
 
 // URL root proyek (tanpa trailing slash)
 define('BASE_URL', 'http://localhost/quisioner-full');
-````
+```
 
-### 3) Buat Admin Pertama (Seeder)
+### 3\) Buat Admin Pertama (Seeder)
 
-1. Buka di browser: `http://localhost/quisioner-full/admin/seed_admin.php`.
-2. Skrip akan membuat admin default **(email: `admin@example.com`, password: `admin123`)**.
-3. **PENTING:** Segera **hapus** file `admin/seed_admin.php` setelah berhasil dijalankan.
+1.  Buka di browser: `http://localhost/quisioner-full/admin/seed_admin.php`.
+2.  Skrip akan membuat admin default **(email: `admin@example.com`, password: `admin123`)**.
+3.  **PENTING:** Segera **hapus** file `admin/seed_admin.php` setelah berhasil dijalankan.
 
-### 4) Selesai
+### 4\) Selesai
 
-* Akses aplikasi: `BASE_URL` (misal: `http://localhost/quisioner/`).
-* Akses panel admin: `BASE_URL/admin/login.php`.
+  * Akses aplikasi: `BASE_URL` (misal: `http://localhost/quisioner/`).
+  * Akses panel admin: `BASE_URL/admin/login.php`.
 
----
+-----
 
 ## Catatan Tambahan
 
-* **Routing Wizard** ditangani oleh `index.php` menggunakan `$_SESSION['wizard_step']`.
-* **Pertanyaan Dinamis** ditarik dari tabel `questions` dan difilter berdasarkan `section` serta `target_role`.
-* **Ekspor CSV** tersedia di dashboard admin dan dapat difilter **Role**/**Section**.
-* **Keamanan**: Pastikan `display_errors` dimatikan di produksi dan gunakan HTTPS bila memungkinkan.
+  * **Routing Wizard** ditangani oleh `index.php` menggunakan `$_SESSION['wizard_step']` dan kini mencakup 9 langkah untuk internal.
+  * **Navigasi Mundur** kini didukung melalui `action="go_back"`.
+  * **Pertanyaan Dinamis** ditarik dari tabel `questions` dan difilter berdasarkan `section`, `target_role`, dan `code` (untuk S3).
+  * **Ekspor CSV** tersedia di dashboard admin.
+  * **Keamanan**: Pastikan `display_errors` dimatikan di produksi.
 
 ```
 ```
