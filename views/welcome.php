@@ -23,7 +23,7 @@ $current_step_number = 1;
             <div class="card-body p-4 p-md-5">
                 
                 <div class="text-center mb-3">
-                    <img src="https://via.placeholder.com/150" 
+                    <img src="src\logo.jpeg" 
                          alt="Logo Kuesioner" 
                          style="width: 100%; max-width: 120px; height: auto;">
                     </div>
