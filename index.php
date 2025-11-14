@@ -7,6 +7,8 @@
  * REVISI 4: Memecah Section 3 (EXPL dan EXPR) menjadi dua langkah
  * - Menambah $_SESSION['current_section_part'] ('part_1', 'part_2')
  * - Memperbarui total_steps menjadi 9
+ *
+ * REVISI 5 (USER): Menambahkan validasi 'consent' server-side
  */
 
 // 1. Load file konfigurasi, database, dan fungsi
@@ -204,6 +206,13 @@ try {
                 break;
 
             case 'start_questions':
+                // === VALIDASI PERSETUJUAN (SERVER-SIDE) ===
+                $consent = $_POST['consent'] ?? '';
+                if ($consent !== 'yes') {
+                    throw new Exception("Anda harus menyetujui persyaratan partisipasi untuk melanjutkan.");
+                }
+                // === AKHIR VALIDASI ===
+
                 $role = $_SESSION['role'];
                 $next_section = 1; 
                 

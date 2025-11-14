@@ -3,6 +3,7 @@
  * /admin/index.php
  * (Fase 4, File 20)
  * Halaman utama admin: Dashboard, Tabel Responden, dan Form Export CSV.
+ * REVISI: Menambahkan link 'Settings' ke navigasi
  */
 
 // 1. Load file konfigurasi, database, dan fungsi
@@ -176,7 +177,10 @@ require_once __DIR__ . '/../includes/header.php';
                 <li class="nav-item">
                     <a class="nav-link" href="questions.php">Kelola Pertanyaan</a>
                 </li>
-            </ul>
+                <li class="nav-item">
+                    <a class="nav-link" href="settings.php">Settings</a>
+                </li>
+                </ul>
             <span class="navbar-text me-3">
                 Login sebagai: <?php echo esc_html($_SESSION['admin_email']); ?>
             </span>
