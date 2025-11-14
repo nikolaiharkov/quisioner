@@ -23,7 +23,7 @@ $current_step_number = 2;
                 
                 <h3 class="card-title mb-4">Sasaran Responden Kuesioner</h3>
                 
-                <p>Kuesioner ini ditujukan kepada pegawai Direktorat Jenderal Bea dan Cukai (DJBC) serta pemangku kepentingan eksternal yang menggunakan atau berinteraksi dengan layanan digital DJBC (termasuk CEISA 4.0).</p>
+                <p>Kuesioner ini ditujukan kepada pegawai Direktorat Jenderal Bea dan Cukai (DJBC) serta pemangku kepentingan eksternal yang membuat, menggunakan atau berinteraksi dengan layanan digital DJBC (termasuk CEISA 4.0).</p>
                 <p>Responden terdiri dari:</p>
 
                 <ul class="list-group list-group-flush mb-3">
