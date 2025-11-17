@@ -127,6 +127,7 @@ INSERT INTO `questions` (`id`, `section_id`, `code`, `text`, `sort_order`, `targ
 CREATE TABLE `respondents` (
   `id` int NOT NULL,
   `full_name` varchar(190) COLLATE utf8mb4_general_ci NOT NULL,
+  `phone_number` varchar(20) COLLATE utf8mb4_general_ci DEFAULT NULL,
   `role` enum('teknisi','manajer','eksternal') COLLATE utf8mb4_general_ci NOT NULL,
   `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
   `gender` enum('L','P','Lainnya') COLLATE utf8mb4_general_ci DEFAULT NULL,
@@ -243,6 +244,7 @@ ALTER TABLE `answers`
   MODIFY `id` bigint NOT NULL AUTO_INCREMENT;
 
 --
+CHG: `psv.sql` - Adding `phone_number` to `respondents` table
 -- AUTO_INCREMENT for table `questions`
 --
 ALTER TABLE `questions`

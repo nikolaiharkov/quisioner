@@ -2,14 +2,16 @@
 // FILE: views/fullname.php
 /*
  * REVISI: Total steps menjadi 9
+ * REVISI 2 (USER): Menambahkan input Nomor Telepon
  */
 
 // Perkiraan total langkah
 $total_steps = 9; 
 $current_step_number = 3;
 
-// Ambil nama sementara jika user kembali (klik 'back')
+// Ambil data sementara jika user kembali (klik 'back')
 $temp_full_name = $_SESSION['temp_full_name'] ?? '';
+$temp_phone_number = $_SESSION['temp_phone_number'] ?? '';
 ?>
 
 <div class="row justify-content-center">
@@ -30,7 +32,7 @@ $temp_full_name = $_SESSION['temp_full_name'] ?? '';
                     <?php csrf_input(); // Helper untuk CSRF token ?>
                     
                     <div class="mb-3">
-                        <label for="full_name" class="form-label fs-5">Silakan masukkan Nama Lengkap Anda:</label>
+                        <label for="full_name" class="form-label fs-5">Nama Lengkap Anda <span class="text-danger">*</span></label>
                         <input type="text" 
                                class="form-control form-control-lg" 
                                id="full_name" 
@@ -40,6 +42,19 @@ $temp_full_name = $_SESSION['temp_full_name'] ?? '';
                                autocomplete="name"
                                autofocus>
                         <div class="form-text">Nama Anda akan digunakan untuk keperluan analisis data internal.</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="phone_number" class="form-label fs-5">Nomor Telepon (WhatsApp) <span class="text-danger">*</span></label>
+                        <input type="tel" 
+                               class="form-control form-control-lg" 
+                               id="phone_number" 
+                               name="phone_number"
+                               value="<?php echo esc_html($temp_phone_number); ?>"
+                               required 
+                               autocomplete="tel"
+                               placeholder="Contoh: 08123456789">
+                        <div class="form-text">Digunakan untuk menghubungi pemenang undian doorprize e-Wallet.</div>
                     </div>
 
                     <hr class="my-4">
@@ -64,22 +79,24 @@ $temp_full_name = $_SESSION['temp_full_name'] ?? '';
         // Panggil auto-scroll
         PSV_scrollTop();
 
-        // Validasi sederhana untuk form text (sesuai prompt)
-        var $input = $('#full_name');
+        // Validasi untuk form text
+        var $nameInput = $('#full_name');
+        var $phoneInput = $('#phone_number');
         var $nextBtn = $('#next-btn');
 
         // Fungsi validasi
-        function validateFullName() {
-            var name = $input.val().trim();
-            // Tombol 'Next' nonaktif sampai terisi
-            $nextBtn.prop('disabled', name.length === 0);
+        function validateForm() {
+            var name = $nameInput.val().trim();
+            var phone = $phoneInput.val().trim();
+            // Tombol 'Next' nonaktif sampai kedua field terisi
+            $nextBtn.prop('disabled', name.length === 0 || phone.length === 0);
         }
 
         // Cek saat pertama kali load (jika ada data dari session)
-        validateFullName();
+        validateForm();
 
-        // Cek setiap kali user mengetik
-        $input.on('input', validateFullName);
+        // Cek setiap kali user mengetik di salah satu input
+        $nameInput.add($phoneInput).on('input', validateForm);
 
         // Pastikan validasi berjalan sebelum submit (opsional, tapi bagus)
         $('#fullname-form').on('submit', function(e) {
@@ -89,7 +106,7 @@ $temp_full_name = $_SESSION['temp_full_name'] ?? '';
                 return;
             }
 
-            if ($input.val().trim().length === 0) {
+            if ($nameInput.val().trim().length === 0 || $phoneInput.val().trim().length === 0) {
                 e.preventDefault(); // Hentikan submit jika (entah bagaimana) kosong
                 $nextBtn.prop('disabled', true);
             }

@@ -3,6 +3,7 @@
 /*
  * /views/welcome.php
  * REVISI: Total steps menjadi 9
+ * REVISI 2 (USER): Menambahkan informasi doorprize
  */
 
 // Hitung total langkah (perkiraan)
@@ -41,6 +42,20 @@ $current_step_number = 1;
                 <p>Konteks penelitian berfokus pada penerapan sistem digital berbasis kecerdasan buatan (AI-enabled systems) di lingkungan Direktorat Jenderal Bea dan Cukai (DJBC) guna memperkuat inovasi layanan publik yang adaptif dan berorientasi pada kebutuhan masyarakat.</p>
                 <p><em>Catatan: Dalam penelitian ini, istilah AI-enabled systems merujuk pada penerapan sistem digital berbasis kecerdasan buatan di lingkungan DJBC, seperti ekosistem CEISA 4.0 (TASYA CEISA Care, penjaluran dan Intelligent Classification Assistant) yang memanfaatkan data dan otomatisasi cerdas untuk mendukung proses pelayanan dan pengawasan.</em></p>
                 
+
+                <div class="card bg-light border-warning my-4">
+                    <div class="card-body">
+                        <h4 class="h5 mb-3">🎁 Doorprize untuk Responden (Undian e-Wallet)</h4>
+                        <p>Sebagai bentuk apresiasi atas partisipasi Anda, kami menyediakan undian doorprize e-Wallet untuk responden yang telah menyelesaikan kuesioner ini:</p>
+                        <ul class="list-unstyled ms-3">
+                            <li><strong>Juara 1</strong> &nbsp; &nbsp; &nbsp; : Rp 1.000.000</li>
+                            <li><strong>Juara 2</strong> &nbsp; &nbsp; &nbsp; : Rp 700.000</li>
+                            <li><strong>Juara 3</strong> &nbsp; &nbsp; &nbsp; : Rp 500.000</li>
+                            <li><strong>Harapan 1</strong> : Rp 300.000</li>
+                        </ul>
+                        <p class="small text-muted mb-0"><em>Pemenang akan ditentukan melalui sistem undian setelah periode pengisian ditutup [ 24 Des 2025 ].</em></p>
+                    </div>
+                </div>
                 <hr class="my-4">
 
                 <form action="index.php" method="POST">

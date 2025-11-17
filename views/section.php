@@ -7,6 +7,8 @@
  * - Logika judul dinamis
  * - Logika query SQL dinamis
  * - Logika progress bar dinamis
+ *
+ * REVISI 4 (USER): Mengubah judul dan deskripsi section
  */
 
 // 1. Ambil data state dari session
@@ -28,30 +30,44 @@ if (!$section) {
     throw new Exception("Data kuesioner (section {$current_section_id}) tidak ditemukan.");
 }
 
-// --- AWAL REVISI: Logika Judul & Filter SQL Dinamis ---
+// --- AWAL REVISI (USER): Logika Judul, Deskripsi & Filter SQL Dinamis ---
 $display_section_id = esc_html($section['id']);
-$display_section_name = esc_html($section['name']);
+$display_section_name = esc_html($section['name']); // Default from DB
 $sql_part_filter = ""; // Filter SQL tambahan
+
+// Atur deskripsi default
+$display_section_description = "Mohon berikan penilaian Anda untuk setiap pernyataan berikut."; 
 
 if ($current_section_id == 1) { // Judul S1
     if ($role === 'teknisi') {
         $display_section_name = 'Technical AI Competency (TAC)';
+        $display_section_description = "Technical AI Competency kemampuan teknis untuk mengoperasikan, mengintegrasikan, dan mengevaluasi sistem AI secara tepat";
     } elseif ($role === 'manajer') {
         $display_section_name = 'Managerial AI Competency (MAC)';
+        $display_section_description = "Managerial Ai Competency Adalah kemampuan manajerial untuk merencanakan, mengarahkan, dan memastikan penggunaan AI sejalan dengan tujuan organisasi, etika, dan nilai layanan public.";
     }
+} elseif ($current_section_id == 2) { // Judul S2
+    $display_section_name = 'Organizational Digital Culture (ODC)';
+    $display_section_description = "Budaya Organisasi Digital adalah karakter dan kebiasaan kerja bersama dalam organisasi yang tercermin dalam nilai, norma, dan praktik yang mendukung kolaborasi lintas unit, keterbukaan terhadap perubahan, inovasi berkelanjutan, komunikasi yang partisipatif, suasana aman untuk bereksperimen, serta pengambilan keputusan berbasis data.";
+
 } elseif ($current_section_id == 3) { // Judul dan Filter S3
     if ($current_part == 'part_1') {
         $display_section_name = 'Exploitative Service Innovation (EXPL)';
+        $display_section_description = "Menggambarkan kemampuan organisasi dalam meningkatkan layanan yang sudah ada melalui optimalisasi proses, pendokumentasian pembelajaran, standarisasi praktik kerja, dan pemanfaatan sistem digital untuk meningkatkan efisiensi, akuntabilitas, dan keandalan layanan publik.";
         $sql_part_filter = " AND code LIKE 'EXPL%' ";
     } elseif ($current_part == 'part_2') {
         $display_section_name = 'Exploratory Service Innovation (EXPR)';
+        $display_section_description = "Menggambarkan kemampuan organisasi dalam menciptakan layanan baru melalui eksperimen, menciptakan sesuatu bersama dengan warga dan mitra, serta pemanfaatan teknologi digital dan kecerdasan buatan (AI) untuk menjawab kebutuhan atau permasalahan layanan publik yang belum terpenuhi.";
         $sql_part_filter = " AND code LIKE 'EXPR%' ";
     } else {
         // Sesuatu salah, S3 harus punya 'part'
         throw new Exception("Kesalahan alur: Bagian 3 tidak memiliki sub-bagian.");
     }
+} elseif ($current_section_id == 5) { // Judul S5
+     $display_section_name = 'Citizen Centric Public Service Value (CCPSV)';
+     $display_section_description = "Citizen-Centric Public Service Value (CCPSV) menggambarkan nilai layanan publik yang benar-benar dirasakan warga ketika menggunakan layanan digital pemerintah yang didukung kecerdasan buatan (AI). Konsep ini menekankan bahwa layanan digital bukan hanya harus berfungsi dengan baik, tetapi juga harus bermakna bagi warga mudah diakses, terbuka, adil, responsif, dan menghasilkan manfaat nyata (Dechamps et al., 2025; Weigl et al., 2024)";
 }
-// --- AKHIR REVISI ---
+// --- AKHIR REVISI (USER) ---
 
 
 // 3. Tentukan filter role untuk query pertanyaan
@@ -123,9 +139,8 @@ if ($role != 'eksternal') {
         <div class="card shadow-sm wizard-card">
             <div class="card-body p-4 p-md-5">
                 
-                <h3 class="card-title mb-2">Bagian <?php echo $display_section_id; ?>: <?php echo $display_section_name; ?></h3>
-                <p class="text-muted mb-4">Mohon berikan penilaian Anda untuk setiap pernyataan berikut.</p>
-                
+                <h3 class="card-title mb-2"><?php echo esc_html($display_section_name); ?></h3>
+                <p class="text-muted mb-4"><?php echo esc_html($display_section_description); ?></p>
                 <form action="index.php" method="POST" id="section-form">
                     <?php csrf_input(); // Helper untuk CSRF token ?>
                     

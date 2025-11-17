@@ -9,6 +9,8 @@
  * - Memperbarui total_steps menjadi 9
  *
  * REVISI 5 (USER): Menambahkan validasi 'consent' server-side
+ *
+ * REVISI 6 (USER): Menambahkan 'phone_number' pada submit_fullname dan submit_role
  */
 
 // 1. Load file konfigurasi, database, dan fungsi
@@ -121,11 +123,14 @@ try {
 
             case 'submit_fullname':
                 $full_name = trim($_POST['full_name'] ?? '');
-                if (empty($full_name)) {
-                    throw new Exception("Nama Lengkap wajib diisi.");
+                $phone_number = trim($_POST['phone_number'] ?? ''); // <-- BARU
+
+                if (empty($full_name) || empty($phone_number)) { // <-- DIPERBARUI
+                    throw new Exception("Nama Lengkap dan Nomor Telepon wajib diisi.");
                 }
                 
                 $_SESSION['temp_full_name'] = $full_name;
+                $_SESSION['temp_phone_number'] = $phone_number; // <-- BARU
                 $_SESSION['wizard_step'] = 'role';
                 break;
 
@@ -136,9 +141,13 @@ try {
                 }
                 
                 $full_name = $_SESSION['temp_full_name'] ?? 'Responden Anonim';
+                $phone_number = $_SESSION['temp_phone_number'] ?? null; // <-- BARU
 
-                $stmt_resp = $pdo->prepare("INSERT INTO respondents (full_name, role) VALUES (?, ?)");
-                $stmt_resp->execute([$full_name, $role]);
+                $stmt_resp = $pdo->prepare("
+                    INSERT INTO respondents (full_name, phone_number, role) 
+                    VALUES (?, ?, ?)
+                "); // <-- DIPERBARUI
+                $stmt_resp->execute([$full_name, $phone_number, $role]); // <-- DIPERBARUI
                 $respondent_id = $pdo->lastInsertId();
 
                 $stmt_sess = $pdo->prepare("INSERT INTO response_sessions (respondent_id) VALUES (?)");
@@ -150,6 +159,7 @@ try {
                 $_SESSION['role'] = $role;
                 $_SESSION['full_name'] = $full_name; // Simpan nama lengkap
                 unset($_SESSION['temp_full_name']);
+                unset($_SESSION['temp_phone_number']); // <-- BARU
 
                 $_SESSION['wizard_step'] = 'demographics';
                 break;
