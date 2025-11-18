@@ -15,6 +15,8 @@
  * Menambahkan <input type="hidden" name="jabatan"> untuk 'teknisi'
  * karena field 'disabled' tidak dikirim oleh browser.
  *
+ * REVISI 4 (USER): Menambahkan 3 jabatan fungsional
+ *
  * Variabel $saved_data tersedia dari views/demographics.php
  */
 
@@ -81,8 +83,11 @@ $is_manajer = ($role === 'manajer');
                     <option value="Kepala Bidang" <?php echo (($saved_data['jabatan'] ?? '') === 'Kepala Bidang') ? 'selected' : ''; ?>>Kepala Bidang</option>
                     <option value="Kepala Kantor" <?php echo (($saved_data['jabatan'] ?? '') === 'Kepala Kantor') ? 'selected' : ''; ?>>Kepala Kantor</option>
                     <option value="Direktur atau Setara" <?php echo (($saved_data['jabatan'] ?? '') === 'Direktur atau Setara') ? 'selected' : ''; ?>>Direktur atau Setara</option>
-
-                <?php else: // Jika rolenya 'teknisi' (DJBC Pelaksana) ?>
+                    
+                    <option value="ahli muda" <?php echo (($saved_data['jabatan'] ?? '') === 'ahli muda') ? 'selected' : ''; ?>>ahli muda</option>
+                    <option value="fungsional ahli madya" <?php echo (($saved_data['jabatan'] ?? '') === 'fungsional ahli madya') ? 'selected' : ''; ?>>fungsional ahli madya</option>
+                    <option value="fungsional ahli utama" <?php echo (($saved_data['jabatan'] ?? '') === 'fungsional ahli utama') ? 'selected' : ''; ?>>fungsional ahli utama</option>
+                    <?php else: // Jika rolenya 'teknisi' (DJBC Pelaksana) ?>
 
                     <option value="Staf/Pelaksana" selected>Staf / Pelaksana</option>
 

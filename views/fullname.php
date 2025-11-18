@@ -3,6 +3,7 @@
 /*
  * REVISI: Total steps menjadi 9
  * REVISI 2 (USER): Menambahkan input Nomor Telepon
+ * REVISI 3 (USER): Menambahkan opsi Anonim
  */
 
 // Perkiraan total langkah
@@ -12,6 +13,9 @@ $current_step_number = 3;
 // Ambil data sementara jika user kembali (klik 'back')
 $temp_full_name = $_SESSION['temp_full_name'] ?? '';
 $temp_phone_number = $_SESSION['temp_phone_number'] ?? '';
+
+// Cek apakah nama 'Anonim' digunakan
+$is_anonim = ($temp_full_name === 'Anonim');
 ?>
 
 <div class="row justify-content-center">
@@ -38,12 +42,19 @@ $temp_phone_number = $_SESSION['temp_phone_number'] ?? '';
                                id="full_name" 
                                name="full_name"
                                value="<?php echo esc_html($temp_full_name); ?>"
+                               <?php if ($is_anonim) echo 'readonly'; // <-- BARU ?>
                                required 
                                autocomplete="name"
                                autofocus>
                         <div class="form-text">Nama Anda akan digunakan untuk keperluan analisis data internal.</div>
                     </div>
 
+                    <div class="form-check mb-3">
+                        <input class="form-check-input" type="checkbox" id="anonim_check" <?php if ($is_anonim) echo 'checked'; // <-- BARU ?>>
+                        <label class="form-check-label" for="anonim_check">
+                            Saya ingin mengisi sebagai "Anonim"
+                        </label>
+                    </div>
                     <div class="mb-3">
                         <label for="phone_number" class="form-label fs-5">Nomor Telepon (WhatsApp) <span class="text-danger">*</span></label>
                         <input type="tel" 
@@ -83,8 +94,24 @@ $temp_phone_number = $_SESSION['temp_phone_number'] ?? '';
         var $nameInput = $('#full_name');
         var $phoneInput = $('#phone_number');
         var $nextBtn = $('#next-btn');
+        var $anonCheck = $('#anonim_check'); // <-- BARU
 
-        // Fungsi validasi
+        // --- AWAL LOGIKA ANONIM (BARU) ---
+        $anonCheck.on('change', function() {
+            if ($(this).is(':checked')) {
+                // Jika dicentang, isi "Anonim" dan kunci
+                $nameInput.val('Anonim').prop('readonly', true);
+            } else {
+                // Jika tidak dicentang, kosongkan dan buka kunci
+                $nameInput.val('').prop('readonly', false).focus();
+            }
+            // Validasi ulang setelah diubah
+            validateForm();
+        });
+        // --- AKHIR LOGIKA ANONIM (BARU) ---
+
+
+        // Fungsi validasi (diperbarui)
         function validateForm() {
             var name = $nameInput.val().trim();
             var phone = $phoneInput.val().trim();

@@ -133,7 +133,7 @@ CREATE TABLE `respondents` (
   `gender` enum('L','P','Lainnya') COLLATE utf8mb4_general_ci DEFAULT NULL,
   `age_group` enum('20-29','30-39','40-49','50+') COLLATE utf8mb4_general_ci DEFAULT NULL,
   `pendidikan` enum('Diploma','S1','S2','S3','Lainnya') COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `jabatan` enum('Staf/Pelaksana','Kepala Seksi','Kepala Subdit','Kepala Bidang','Kepala Kantor','Direktur atau Setara') COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `jabatan` enum('Staf/Pelaksana','Kepala Seksi','Kepala Subdit','Kepala Bidang','Kepala Kantor','Direktur atau Setara','ahli muda','fungsional ahli madya','fungsional ahli utama') COLLATE utf8mb4_general_ci DEFAULT NULL,
   `lama_bekerja` enum('<3','3-7','8-15','>15') COLLATE utf8mb4_general_ci DEFAULT NULL,
   `unit` varchar(150) COLLATE utf8mb4_general_ci DEFAULT NULL,
   `pengalaman_ai` enum('Belum pernah','Pernah menggunakan','Terlibat proyek AI','Mengelola/mengembangkan') COLLATE utf8mb4_general_ci DEFAULT NULL,
@@ -244,7 +244,7 @@ ALTER TABLE `answers`
   MODIFY `id` bigint NOT NULL AUTO_INCREMENT;
 
 --
-CHG: `psv.sql` - Adding `phone_number` to `respondents` table
+CHG: `psv.sql` - Updating `jabatan` ENUM definitions
 -- AUTO_INCREMENT for table `questions`
 --
 ALTER TABLE `questions`
