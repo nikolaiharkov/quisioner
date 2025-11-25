@@ -4,6 +4,7 @@
  * (Fase 4, File 20)
  * Halaman utama admin: Dashboard, Tabel Responden, dan Form Export CSV.
  * REVISI: Menambahkan link 'Settings' ke navigasi
+ * REVISI 2: Menambahkan kolom 'Unit/Bidang' pada Tabel & CSV Export
  */
 
 // 1. Load file konfigurasi, database, dan fungsi
@@ -45,9 +46,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'expor
         die("Tidak ada pertanyaan aktif ditemukan untuk section ini.");
     }
 
-    // 2. Ambil responden berdasarkan role
+    // 2. Ambil responden berdasarkan role (UPDATE: Tambah r.unit)
     $stmt_r = $pdo->prepare("
-        SELECT r.id, r.full_name, s.id as session_id 
+        SELECT r.id, r.full_name, r.unit, s.id as session_id 
         FROM respondents r
         JOIN response_sessions s ON r.id = s.respondent_id
         WHERE r.role = ? AND s.status = 'completed'
@@ -77,8 +78,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'expor
     
     $output = fopen('php://output', 'w');
     
-    // 5. Buat Header Row
-    $header = ['respondent_id', 'full_name', 'session_id'];
+    // 5. Buat Header Row (UPDATE: Tambah 'unit')
+    $header = ['respondent_id', 'full_name', 'unit', 'session_id'];
     foreach ($questions as $q) {
         $header[] = $q['code'] ?? ('q_' . $q['id']); // Gunakan code (T1, ODC1, dll)
     }
@@ -89,6 +90,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'expor
         $row = [
             $resp['id'],
             $resp['full_name'],
+            $resp['unit'], // UPDATE: Masukkan data unit
             $resp['session_id']
         ];
         
@@ -130,8 +132,9 @@ $stats = $stmt_stats->fetch(PDO::FETCH_ASSOC);
 $filter_role = $_GET['filter_role'] ?? 'all';
 $filter_search = $_GET['filter_search'] ?? '';
 
+// UPDATE: Tambahkan r.unit ke SELECT
 $sql_resp = "
-    SELECT r.id, r.full_name, r.role, r.created_at, s.status, s.completed_at 
+    SELECT r.id, r.full_name, r.unit, r.role, r.created_at, s.status, s.completed_at 
     FROM respondents r
     LEFT JOIN response_sessions s ON r.id = s.respondent_id
 ";
@@ -255,7 +258,7 @@ require_once __DIR__ . '/../includes/header.php';
                 <tr>
                     <th>ID</th>
                     <th>Nama Lengkap</th>
-                    <th>Peran (Role)</th>
+                    <th>Unit / Bidang</th> <th>Peran (Role)</th>
                     <th>Status</th>
                     <th>Tanggal Mulai</th>
                     <th>Tanggal Selesai</th>
@@ -264,14 +267,14 @@ require_once __DIR__ . '/../includes/header.php';
             <tbody>
                 <?php if (empty($respondents_list)): ?>
                     <tr>
-                        <td colspan="6" class="text-center text-muted">Tidak ada data responden ditemukan.</td>
+                        <td colspan="7" class="text-center text-muted">Tidak ada data responden ditemukan.</td>
                     </tr>
                 <?php else: ?>
                     <?php foreach ($respondents_list as $resp): ?>
                         <tr>
                             <td><?php echo esc_html($resp['id']); ?></td>
                             <td><?php echo esc_html($resp['full_name']); ?></td>
-                            <td><span class="badge text-bg-secondary"><?php echo esc_html($resp['role']); ?></span></td>
+                            <td><?php echo esc_html($resp['unit'] ?? '-'); ?></td> <td><span class="badge text-bg-secondary"><?php echo esc_html($resp['role']); ?></span></td>
                             <td>
                                 <?php if ($resp['status'] === 'completed'): ?>
                                     <span class="badge text-bg-success">Completed</span>
